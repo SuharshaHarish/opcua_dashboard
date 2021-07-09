@@ -1,0 +1,56 @@
+{% load static %} {%block body%}
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Montserrat:400,500&display=swap');
+.navbar{
+    position: sticky;
+}
+.navbar-custom {
+    margin: 0;
+    padding: 0;
+    /* overflow: hidden; */
+    color: #FFFFFF;
+    background-color: #232323;
+}
+
+.navbar-nav{
+    margin: 0;
+    padding: 0;
+    list-style-type:none;
+}
+
+.nav-link{
+  padding: 15px;
+  /* margin-left: 15px; */
+  display: block;
+}
+.nav-link:hover {
+  background-color: #111;
+  color: black;
+  text-decoration: none;
+}
+
+</style>
+
+<!-- Nav menu with user information -->
+
+
+<nav class="navbar navbar-static-top navbar-dark navbar-custom pmd-navbar pmd-z-depth fixed-top">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">      
+        <a class="nav-link" href="{% url 'home' %}" style="font-size:20px; color: white; margin-left: 20px;">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'anomaly' %}" style="font-size:20px; color: white;margin-left: 20px;">Anomalies</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'graphs' %}" style="font-size:20px; color: white; margin-left: 20px;">Graphs</a>
+      </li>
+    </ul>
+  </div>
+  
+    
+</nav>
+
+
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'opcua_app/base.html' %} {% block body %} {% load static %}
+{% include 'opcua_app/navbar.html' %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Mulish:wght@300&display=swap');
+    body{
+        /* font-family: 'Alegreya', serif; */
+        background: '#c3c3c3';
+    }
+    #heading{
+        font-family: 'Mulish', serif;
+        text-shadow: 2px 2px 2px #ababab;
+        text-align: center;
+        margin: 3%;
+    }
+    .charts{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #FFFFFF;
+    }
+    .pressure{
+        display: block;
+        margin: 2%;          
+        background-color: #262626;
+        box-shadow: 5px 10px 10px #333333;
+        border-radius: 10px;
+    }
+    #pressure_chart{
+        height: 300px;
+        width: 600px;
+    }
+    #pressure_value{
+        font-size: 30px;
+    }
+    .temperature{   
+        margin: 2%;        
+        background-color: #262626;
+        box-shadow: 5px 10px 10px #333333;
+        border-radius: 10px;
+    }
+    #temperature_chart{
+        height: 300px;
+        width: 600px;
+    }
+    #temperature_value{
+        font-size: 30px;
+    }
+    
+</style>
+<script>
+
+    let socket =new WebSocket('ws://localhost:8000/ws/polData');
+    socket.onopen =function(e){
+        // alert('Connection established');
+    };
+
+    socket.onmessage = function(e){
+        // console.log(e.data);
+        var recData=JSON.parse(e.data);
+        temperature = recData["temperature"];
+        pressure = recData["pressure"];
+
+        // Changing Pressure Gauge
+
+        var target = document.getElementById('pressure_chart'); // your canvas element
+        var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+        gauge.maxValue = 3000; // set max gauge value
+        gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+        gauge.animationSpeed = 32; // set animation speed (32 is default value)
+        gauge.set(pressure); // set actual value
+        document.getElementById('pressure_value').innerHTML = pressure+" Pa"
+
+        // Changing Temperature Gauge
+
+        var target2 = document.getElementById('temperature_chart'); // your canvas element
+        var gauge2 = new Gauge(target2).setOptions(opts2); // create sexy gauge!
+        gauge2.maxValue = 50; // set max gauge value
+        gauge2.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+        gauge2.animationSpeed = 32; // set animation speed (32 is default value)
+        gauge2.set(temperature); // set actual value
+        document.getElementById('temperature_value').innerHTML = temperature+ " &#8451"
+
+    };
+
+    socket.onclose = function(e){
+        alert('Connection CLosed');
+    };    
+    </script>
+<div class="home">
+    <h1 id="heading">OPCUA Realtime Dashboard</h1>
+    <div class="charts">
+        <div class="pressure">
+            <h1>Pressure</h1>
+            <canvas id="pressure_chart"></canvas>
+            <div id = "pressure_value"></div>
+        </div>
+        <div class="temperature">
+            <h1>Temperature</h1>
+            <canvas id="temperature_chart"></canvas>
+            <div id = "temperature_value"></div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/gauge.min.js' %}"></script>
+
+<script>
+// Initial pressure gauge
+
+    var opts = {
+  angle: 0, // The span of the gauge arc
+  lineWidth: 0.2, // The line thickness
+  radiusScale: 0.9, // Relative radius
+  pointer: {
+    length: 0.5, // // Relative to gauge radius
+    strokeWidth: 0.035, // The thickness
+    color: '#FFFFFF' // Fill color
+  },
+  limitMax: false,     // If false, max value increases automatically if value > maxValue
+  limitMin: false,     // If true, the min value of the gauge will be fixed
+  colorStart: '#6FADCF',   // Colors
+  colorStop: '#8FC0DA',    // just experiment with them
+  strokeColor: '#E0E0E0',  // to see which ones work best for you
+  generateGradient: true,
+  highDpiSupport: true,     // High resolution support
+  
+  staticLabels: {
+  font: "20px sans-serif",  // Specifies font
+  labels: [200, 500, 2200, 2600, 3000],  // Print labels at these values
+  color: "#FFFFFF",  // Optional: Label text color
+  fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+    },
+  staticZones: [
+   {strokeStyle: "#F03E3E", min: 0, max: 200}, // Red from 100 to 130
+   {strokeStyle: "#FFDD00", min: 200, max: 500}, // Yellow
+   {strokeStyle: "#30B32D", min: 500, max: 2200}, // Green
+   {strokeStyle: "#FFDD00", min: 2200, max: 2600}, // Yellow
+   {strokeStyle: "#F03E3E", min: 2600, max: 3000}  // Red
+],
+};
+
+var target = document.getElementById('pressure_chart'); // your canvas element
+var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+gauge.maxValue = 3000; // set max gauge value
+gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+gauge.animationSpeed = 32; // set animation speed (32 is default value)
+gauge.set(1250); // set actual value
+document.getElementById('pressure_value').innerHTML = "1250 Pa"
+
+// Initial temperature gauge
+
+var opts2 = {
+  angle: 0, // The span of the gauge arc
+  lineWidth: 0.44, // The line thickness
+  radiusScale: 1, // Relative radius
+  pointer: {
+    length: 0.6, // // Relative to gauge radius
+    strokeWidth: 0.035, // The thickness
+    color: '#FFFFFF' // Fill color
+  },
+  limitMax: false,     // If false, max value increases automatically if value > maxValue
+  limitMin: false,     // If true, the min value of the gauge will be fixed
+  colorStart: '#6FADCF',   // Colors
+  colorStop: '#8FC0DA',    // just experiment with them
+  strokeColor: '#E0E0E0',  // to see which ones work best for you
+  generateGradient: true,
+  highDpiSupport: true,     // High resolution support
+  percentColors : [[0.0, "#2596be" ], [0.50, "#f9c802"], [1.0, "#ff0000"]],
+  staticLabels: {
+  font: "20px sans-serif",  // Specifies font
+  labels: [0, 10, 20, 30, 40, 50],  // Print labels at these values
+  color: "#FFFFFF",  // Optional: Label text color
+  fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+},
+};
+var target2 = document.getElementById('temperature_chart'); // your canvas element
+var gauge2 = new Gauge(target2).setOptions(opts2); // create sexy gauge!
+gauge2.maxValue = 50; // set max gauge value
+gauge2.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+gauge2.animationSpeed = 32; // set animation speed (32 is default value)
+gauge2.set(5); // set actual value
+document.getElementById('temperature_value').innerHTML = "5 &#8451"
+</script>
+
+{% endblock %}
