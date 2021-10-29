@@ -15,8 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-
+# from opcua_app.opcua_client import start_client
+# import threading
+# t = threading.Thread(target=start_client)
+# t.setDaemon(True)
+# t.start()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('opcua_app.urls'))
 ]
+
+# start_client()

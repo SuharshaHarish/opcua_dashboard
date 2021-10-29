@@ -16,9 +16,13 @@ from bokeh.embed import components
 from bokeh.models import HoverTool, LassoSelectTool, WheelZoomTool, PointDrawTool, ColumnDataSource, ImageURL
 from bokeh.models.tickers import FixedTicker
 from bokeh.models import DatetimeTickFormatter,NumeralTickFormatter
+import os
+
 
 def home(request):
-
+    # os.system("python manage.py process_tasks")
+    
+    # os.system('python opcua_app/opcua_client.py')
     return render(request,'opcua_app/home.html')
 
 def anomaly_view(request):
@@ -97,6 +101,7 @@ def find_limits():
                 temp_anomaly = Anomaly.objects.create(param_type="t", temp_key=temp)
                 temp_anomaly.save()
     return args
+    
 def graphs(request):
 
     #Create pressure graph
