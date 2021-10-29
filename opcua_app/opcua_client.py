@@ -24,7 +24,7 @@ def connection_loop():
             ws.send(json.dumps(data))
             time.sleep(2)
         except Exception as e:            
-            print("Caught timeout",e.__class__.__name__)
+            print("Caught ",e.__class__.__name__)
             handle_error(e)
             break
 
@@ -47,7 +47,7 @@ def handle_error(e):
         print("Retrying Connection in {0} seconds".format(waiting_time.total_seconds()))
         time.sleep(waiting_time.total_seconds())
         print("Trying to connect...")
-        
+
     else:       
         print("Retrying Connection in 10 seconds") 
         print("Trying to connect...")
@@ -62,14 +62,15 @@ while True:
         print("Client closed")
         sys.exit()
 
-    except(ConnectionResetError):
-        client.disconnect()
-        print("Client closed test")
-        sys.exit()
+    # except(ConnectionResetError):
+    #     client.disconnect()
+    #     print("Client closed test")
+    #     sys.exit()
 
     except Exception as e:
         # client.disconnect()
         # print("Connection Refused by dashboard Client closed") 
         print("Server unavailable")    
         handle_error(e)
-        
+
+# Use ctrl+fn+b if terminal freezes
